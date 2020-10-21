@@ -1,8 +1,24 @@
+/*
+Evaluacion de funciones usando pilas
+Autores: Huerta Puente Andrew Wiliam (C) Octubre 2020
+VERSIÓN: 1.0
+
+DESCRIPCIÓN: 
+
+OBSERVACIONES: Previamente se debieron compilar las librerias para obtener el codigo objeto
+
+COMPILACIÓN USANDO LA TAD PILA ESTATITA: gcc main.c -o TADPilaEst.o
+COMPILACIÓN USANDO LA TAD PILA DINAMICA: gcc main.c -o TADPilaDin.o
+*/
+
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
 #include<math.h>
-#include"TADPilaEst.h"
+//Uso de la libreria para pilas estaticas
+#include "TADPilaEst.h"
+//Uso de la libreria para pilas dinamicas
+//#include "TADPilaDin.h"
 
 //Declaracion de funciones
 
@@ -15,8 +31,10 @@ boolean buscarLetra(char [], char);//Busca cada letra en la expresion sin que se
 void obtenerValores(char[],float *);//Pide al usuario los valores de cada variable
 void evaluarPostfija(char[],char[],float[]);//Evalua la funcion en postfija
 
+
+//Funcion principal
 int main(){    
-    char expresion[100],posfijo[100];
+    char expresion[101],posfijo[101];
     printf("Ingresa la expresion: ");
     scanf("%s",expresion);
     int longitud=strlen(expresion);
@@ -200,6 +218,7 @@ boolean buscarLetra(char *variables, char letra){
 Descripcion: Pide al usuario los valores de cada variable
 Recibe: char variables[] (Arreglo de variables), float *valores (Arreglo que almacenara el valor de cada variable)
 Devuelve: void (No devuelve algo)
+Observaciones: Almacena los valores en la posicion respectiva al arreglo de variables
 */
 void obtenerValores(char variables[], float *valores){
     int  i;
