@@ -161,6 +161,7 @@ void obtenerVariables(char expresion[],char *variables){
     char *primerVariable=variables;
     int i;
     for(i=0;i<strlen(expresion);i++){
+        //Uso los valores en el codigo ASCII de las letras mayusculas
         if(expresion[i]>=65 && expresion[i]<=90){
             if(!buscarLetra(primerVariable,expresion[i])){
                 *variables=expresion[i];
