@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<math.h>
 #include"TADPilaEst.h"
 
 //Declaracion de funciones
@@ -8,10 +9,11 @@
 boolean RevisionParentesis(char[], int); //Revisa que los parentesis esten bien
 void ConvertirPostfijo(char[],int,char *);//Convierte la expresion a postfija
 int nivelPrioridad(char);//Da un nivel de prioridad a los operadores
-void evaluarFuncion(char []); //Evaluar expresion en postfijo
+void procesarExpresion(char []); //Lleva a cabo todos los pasos para poder evaluar la funcion
 void obtenerVariables (char [],char *);//Encuentra cada variable de la expresion
 boolean buscarLetra(char [], char);//Busca cada letra en la expresion sin que se repitan
 void obtenerValores(char[],float *);//Pide al usuario los valores de cada variable
+void evaluarPostfija(char[],char[],float[]);//Evalua la funcion en postfija
 
 int main(){    
     char expresion[100],posfijo[100];
@@ -22,7 +24,7 @@ int main(){
     if(RevisionParentesis(expresion,longitud)){
         ConvertirPostfijo(expresion,longitud,posfijo);
         printf("La expresion en posfijo es: %s\n",posfijo);
-        evaluarFuncion(posfijo);
+        procesarExpresion(posfijo);
     }
     exit(0);
 }
@@ -139,21 +141,23 @@ int nivelPrioridad(char operador){
     }
 }
 
-
-void evaluarFuncion(char postfijo[]){
-    int longitud=strlen(postfijo);
-    pila pilaEvaluacion;
-    Initialize(&pilaEvaluacion);
+/*
+Descripcion: Realiza todo para poder evaluar la expresion
+Recibe: char postfijo[] (Recive la expresion en postfijo)
+Devuelve: void (No retorna algo)
+Observaciones: Da opcion para volver a pedir los valores al usuario
+*/
+void procesarExpresion(char postfijo[]){
     char variables[100];
     float valores[100];
+    int op;
     obtenerVariables(postfijo,variables);
-    obtenerValores(variables,valores);
-    int i;
-    for(i=0;i<longitud;i++){
-        if(postfijo[i]>=65 && postfijo[i]<=90){
-            
-        }
-    }
+    do{
+        obtenerValores(variables,valores);
+        evaluarPostfija(postfijo,variables,valores);
+        printf("Quieres cambiar el valor de las variables\n1) Si\n2) No\n");
+        scanf("%d",&op);
+    }while(op==1);
 }
 
 /*
@@ -166,6 +170,7 @@ void obtenerVariables(char expresion[],char *variables){
     char *primerVariable=variables;
     int i;
     for(i=0;i<strlen(expresion);i++){
+        
         if(expresion[i]>=65 && expresion[i]<=90){
             if(!buscarLetra(primerVariable,expresion[i])){
                 *variables=expresion[i];
@@ -173,6 +178,7 @@ void obtenerVariables(char expresion[],char *variables){
             }
         }
     }
+    *variables='\0';
 }
 
 /*
@@ -182,6 +188,7 @@ Devuelve: boolean (Retorna TRUE si encuentra la letra, en caso contrario retorna
 */
 boolean buscarLetra(char *variables, char letra){
     int i;
+    //Recorre la lista de variables buscando la variable actual
     for(i=0;i<strlen(variables);i++){
         if(letra==variables[i])
             return TRUE;
@@ -196,11 +203,73 @@ Devuelve: void (No devuelve algo)
 */
 void obtenerValores(char variables[], float *valores){
     int  i;
+    //Con un ciclo pide cada valor al usuario 
     for(i = 0; i < strlen(variables); i++){
         printf("Ingresa el valor de %c:",variables[i]);
         scanf("%f",valores);
         valores++;
     }
+}
+
+/*
+Descripcion: Sustituye las variables por sus valores y hace la evaluacion
+Recibe: char postfijo[] (Expresion en postfijo),char variables[] (Arreglo de variables de la funcion),float valores[] (Valor de cada variable)
+Devuelve: void (No retorna algo)
+Observaciones: Los valores tienen que estar en la posicion respectiva a su variable. En caso de que esten mal los operadores el programa se cerrara
+*/
+void evaluarPostfija(char postfijo[],char variables[],float valores[]){
+    int longitud=strlen(postfijo);
+    float primerNumero,segundoNumero;
+    pila pilaEvaluacion;
+    elemento temp;
+    Initialize(&pilaEvaluacion);
+    int i,j;
+    //Recorre todo la expresion
+    for(i=0;i<longitud;i++){
+        //Busca una variable y el valor que le corresponde, este lo guarda en la pila
+        if(postfijo[i]>=65 && postfijo[i]<=90){
+            for(j=0;j<strlen(variables);j++){
+                if(postfijo[i]==variables[j]){
+                    temp.valor=valores[j];
+                    Push(&pilaEvaluacion,temp);
+                }
+            }
+        }
+        else{
+            /*En caso de encontrar un operador, extrae dos elementos de la pila y los opera en el 
+            orden establecido (el primer numero extraido a la dereche y el segundo a la izquierda)*/
+            segundoNumero=Pop(&pilaEvaluacion).valor;
+            primerNumero=Pop(&pilaEvaluacion).valor;
+            switch(postfijo[i]){
+            case '^':
+                temp.valor=pow(primerNumero,segundoNumero);
+                Push(&pilaEvaluacion,temp);
+                break;
+            case '*':
+                temp.valor=primerNumero*segundoNumero;
+                Push(&pilaEvaluacion,temp);
+                break;
+            case '/':
+                temp.valor=primerNumero/segundoNumero;
+                Push(&pilaEvaluacion,temp);
+                break;
+            case '+':
+                temp.valor=primerNumero+segundoNumero;
+                Push(&pilaEvaluacion,temp);
+                break;
+            case '-':
+                temp.valor=primerNumero-segundoNumero;
+                Push(&pilaEvaluacion,temp);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    //El numero que queda en la pila es el resultado de la expresion
+    float resultado=Pop(&pilaEvaluacion).valor;
+    printf("\nEl resultado de la evaluacion es: %f\n",resultado);
+    Destroy(&pilaEvaluacion);
 }
 
 /*
