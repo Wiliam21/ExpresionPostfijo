@@ -148,7 +148,12 @@ void evaluarFuncion(char postfijo[]){
     float valores[100];
     obtenerVariables(postfijo,variables);
     obtenerValores(variables,valores);
-
+    int i;
+    for(i=0;i<longitud;i++){
+        if(postfijo[i]>=65 && postfijo[i]<=90){
+            
+        }
+    }
 }
 
 /*
