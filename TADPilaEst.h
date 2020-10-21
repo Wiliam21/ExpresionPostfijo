@@ -28,6 +28,7 @@ typedef struct elemento
 {
 	//Variables de la estructura "elemento" (El usuario puede modificar)
 	char c;
+	float valor;
 	//***
 	//***
 	//***
