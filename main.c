@@ -1,9 +1,9 @@
 /*
 Evaluacion de funciones usando pilas
-Autores: Huerta Puente Andrew Wiliam (C) Octubre 2020
+Autores: Hernández Osnaya Alexandra, Hernández Rosales Itzel Yamile, Huerta Puente Andrew Wiliam
 VERSIÓN: 1.0
 
-DESCRIPCIÓN: 
+DESCRIPCIÓN: Programa que valida y evalua expresiones en infijo, validando parentesis y pasando la expresion a posfijo usando el TAD pila
 
 OBSERVACIONES: Previamente se debieron compilar las librerias para obtener el codigo objeto
 
@@ -16,9 +16,9 @@ COMPILACIÓN USANDO LA TAD PILA DINAMICA: gcc main.c -o TADPilaDin.o
 #include<stdlib.h>
 #include<math.h>
 //Uso de la libreria para pilas estaticas
-#include "TADPilaEst.h"
+// #include "TADPilaEst.h"
 //Uso de la libreria para pilas dinamicas
-//#include "TADPilaDin.h"
+#include "TADPilaDin.h"
 
 //Declaracion de funciones
 
